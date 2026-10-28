@@ -1,0 +1,23 @@
+{
+  "short_name": "SigmaDev",
+  "name": "Sigma Web Dev - Gen-Z Learning App",
+  "description": "Learn Full-Stack Web Development with CodeWithHarry Sigma Course, AI Chatbot, and Hands-on Practice",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#090d16",
+  "theme_color": "#a855f7",
+  "display": "standalone",
+  "orientation": "portrait"
+}
+

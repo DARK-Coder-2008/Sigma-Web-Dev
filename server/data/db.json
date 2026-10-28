@@ -1,0 +1,101 @@
+{
+  "users": [
+    {
+      "id": "usr_1793197519519_de494s",
+      "name": "Sigma Dev Aryan",
+      "email": "aryan@genz.dev",
+      "passwordHash": "$2a$10$aGFVEDNJ7WH.BgWbTU23kOY5H1omHcwn27EEW51gu2hI/v8I6fSLC",
+      "xp": 110,
+      "streak": 1,
+      "lastActiveDate": "2026-10-28",
+      "level": 1,
+      "badges": [
+        "Sigma Rookie 🚀"
+      ],
+      "createdAt": "2026-10-28T14:25:19.519Z"
+    },
+    {
+      "id": "usr_1793198399290_fog6ux",
+      "name": "Om Prakash Nayak",
+      "email": "omprakashn682@gmail.com",
+      "passwordHash": "$2a$10$zSELToAs9bZfVk0IlIhFQuiqUf1L4d1Yr8aXHOEMhG3T1lQxK/PJa",
+      "xp": 485,
+      "streak": 1,
+      "lastActiveDate": "2026-10-28",
+      "level": 4,
+      "badges": [
+        "Sigma Rookie 🚀",
+        "CSS Alchemist 🎨",
+        "JS Sorcerer ⚡"
+      ],
+      "createdAt": "2026-10-28T14:39:59.290Z"
+    }
+  ],
+  "progress": [
+    {
+      "userId": "usr_1793197519519_de494s",
+      "lessonId": "sigma_01",
+      "completedAt": "2026-10-28T14:25:19.535Z",
+      "quizScore": 1
+    },
+    {
+      "userId": "usr_1793198399290_fog6ux",
+      "lessonId": "sigma_01",
+      "completedAt": "2026-10-28T14:40:02.135Z",
+      "quizScore": 1
+    },
+    {
+      "userId": "usr_1793198399290_fog6ux",
+      "lessonId": "sigma_02",
+      "completedAt": "2026-10-28T14:40:14.125Z",
+      "quizScore": 1
+    },
+    {
+      "userId": "usr_1793198399290_fog6ux",
+      "lessonId": "sigma_03",
+      "completedAt": "2026-10-28T14:40:30.052Z",
+      "quizScore": 0
+    },
+    {
+      "userId": "usr_1793198399290_fog6ux",
+      "lessonId": "sigma_04",
+      "completedAt": "2026-10-28T14:40:43.099Z",
+      "quizScore": 0
+    },
+    {
+      "userId": "usr_1793198399290_fog6ux",
+      "lessonId": "sigma_05",
+      "completedAt": "2026-10-28T14:40:52.262Z",
+      "quizScore": 0
+    },
+    {
+      "userId": "usr_1793198399290_fog6ux",
+      "lessonId": "sigma_06",
+      "completedAt": "2026-10-28T14:40:58.618Z",
+      "quizScore": 1
+    }
+  ],
+  "chatHistory": [
+    {
+      "id": "msg_1793197519545",
+      "message": "CSS me div center kaise karein?",
+      "reply": "Arre bro, div center karna CSS ka sabse iconic meme hai, but super easy! 😎\nFlexbox trick use karo, no cap:\n```css\n.parent {\n  display: flex;\n  justify-content: center; /* Horizontal center */\n  align-items: center;     /* Vertical center */\n  min-height: 100vh;\n}\n```\nBas yeh 3 lines and boom! Aapka content dead center ho jayega. Fire, right? 🔥",
+      "language": "hinglish",
+      "timestamp": "2026-10-28T14:25:19.545Z"
+    },
+    {
+      "id": "msg_1793197519561",
+      "message": "HTML क्या है?",
+      "reply": "HTML (HyperText Markup Language) वेबपेज का कंकाल (skeleton) है! \nजैसे:\n```html\n<h1>नमस्ते दुनिया!</h1>\n<p>यह मेरा पहला वेबपेज है।</p>\n<a href=\"https://google.com\">Google पर जाएं</a>\n```\nटिप: हमेशा semantic tags जैसे `<header>`, `<main>`, `<footer>` इस्तेमाल करें ताकि आपकी वेबसाइट SEO-friendly बने! 🚀",
+      "language": "hi",
+      "timestamp": "2026-10-28T14:25:19.561Z"
+    },
+    {
+      "id": "msg_1793198922585",
+      "message": "CSS me div center kaise karte hain?",
+      "reply": "Arre bro, div center karna CSS ka sabse iconic meme hai, but super easy! 😎\nFlexbox trick use karo, no cap:\n```css\n.parent {\n  display: flex;\n  justify-content: center; /* Horizontal center */\n  align-items: center;     /* Vertical center */\n  min-height: 100vh;\n}\n```\nBas yeh 3 lines and boom! Aapka content dead center ho jayega. Fire, right? 🔥",
+      "language": "hinglish",
+      "timestamp": "2026-10-28T14:48:42.585Z"
+    }
+  ]
+}
