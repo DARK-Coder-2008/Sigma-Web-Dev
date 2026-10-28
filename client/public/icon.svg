@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16" />
+      <stop offset="50%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#090d16" />
+    </linearGradient>
+    <linearGradient id="sigmaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="50%" stop-color="#ec4899" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="15" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Rounded App Icon -->
+  <rect width="512" height="512" rx="115" fill="url(#bg)" stroke="#a855f7" stroke-width="8" stroke-opacity="0.4" />
+
+  <!-- Glowing Outer Circle -->
+  <circle cx="256" cy="256" r="185" fill="none" stroke="url(#sigmaGrad)" stroke-width="4" stroke-opacity="0.3" stroke-dasharray="8 8" />
+
+  <!-- Sigma Symbol 'Σ' -->
+  <path d="M 370 140 L 155 140 L 265 256 L 155 372 L 370 372" 
+        fill="none" 
+        stroke="url(#sigmaGrad)" 
+        stroke-width="46" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"
+        filter="url(#glow)" />
+
+  <!-- Small GenZ Sparkle Accent -->
+  <polygon points="380,120 388,135 403,143 388,151 380,166 372,151 357,143 372,135" fill="#facc15" />
+</svg>

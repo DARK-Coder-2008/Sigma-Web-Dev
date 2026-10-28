@@ -4,20 +4,28 @@
   "description": "Learn Full-Stack Web Development with CodeWithHarry Sigma Course, AI Chatbot, and Hands-on Practice",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "./icon-192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.png",
+      "src": "./icon-512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512",
+      "purpose": "any"
     }
   ],
-  "start_url": "/",
+  "start_url": "./",
+  "scope": "./",
   "background_color": "#090d16",
   "theme_color": "#a855f7",
   "display": "standalone",
   "orientation": "portrait"
 }
-
