@@ -7,8 +7,10 @@ import CourseRoadmap from './components/CourseRoadmap';
 import CodePlayground from './components/CodePlayground';
 import AiChatbot from './components/AiChatbot';
 import ProfileView from './components/ProfileView';
+import LeaderboardView from './components/LeaderboardView';
 import { Smartphone, Monitor } from 'lucide-react';
 import { chaptersData } from './data/chaptersData';
+import { initAnalytics, trackAppInstall, syncUserToLeaderboard } from './services/analyticsService';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('roadmap');
@@ -29,23 +31,36 @@ export default function App() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
-  // Android PWA Install Event Listener
+  // Android PWA Install Event Listener & Analytics Init
   useEffect(() => {
+    initAnalytics();
+
     const handleBeforeInstall = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
       console.log('📱 Android PWA Install prompt ready');
     };
 
+    const handleAppInstalled = () => {
+      trackAppInstall();
+    };
+
+    // Check if launched from installed app icon
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      trackAppInstall();
+    }
+
     const handleOnline = () => setIsOffline(false);
     const handleOffline = () => setIsOffline(true);
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+    window.addEventListener('appinstalled', handleAppInstalled);
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+      window.removeEventListener('appinstalled', handleAppInstalled);
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
@@ -138,6 +153,26 @@ export default function App() {
     }
   };
 
+  const handleAwardXp = (amount) => {
+    setUser(prev => {
+      const current = prev || {
+        id: 'usr_guest',
+        name: 'Om Prakash Nayak',
+        email: 'omprakashn682@gmail.com',
+        xp: 485,
+        level: 4,
+        streak: 1,
+        badges: ['Sigma Rookie 🚀', 'CSS Alchemist 🎨', 'JS Sorcerer ⚡']
+      };
+      const newXp = (current.xp || 50) + amount;
+      const newLevel = Math.floor(newXp / 150) + 1;
+      const updated = { ...current, xp: newXp, level: newLevel };
+      try { localStorage.setItem('sigma_current_user', JSON.stringify(updated)); } catch {}
+      syncUserToLeaderboard(updated, completedLessons);
+      return updated;
+    });
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('sigma_token');
     localStorage.removeItem('sigma_current_user');
@@ -222,6 +257,15 @@ export default function App() {
             <CodePlayground
               initialCode={codeForPlayground}
               language={language}
+            />
+          )}
+
+          {activeTab === 'leaderboard' && (
+            <LeaderboardView
+              user={user}
+              completedLessons={completedLessons}
+              language={language}
+              onAwardXp={handleAwardXp}
             />
           )}
 

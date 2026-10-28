@@ -129,3 +129,4 @@ function createPng(size, filename) {
 const pubDir = path.join(process.cwd(), 'client', 'public');
 createPng(192, path.join(pubDir, 'icon-192.png'));
 createPng(512, path.join(pubDir, 'icon-512.png'));
+
