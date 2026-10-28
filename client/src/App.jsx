@@ -53,6 +53,15 @@ export default function App() {
 
   // Check user session
   useEffect(() => {
+    // 1. Load local cached user first (instant offline & GitHub Pages support)
+    const savedUser = localStorage.getItem('sigma_current_user');
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch {}
+    }
+
+    // 2. Sync with backend if token exists and server reachable
     const token = localStorage.getItem('sigma_token');
     if (token) {
       fetch('/api/auth/me', {
@@ -62,6 +71,7 @@ export default function App() {
         .then(data => {
           if (data && data.user) {
             setUser(data.user);
+            localStorage.setItem('sigma_current_user', JSON.stringify(data.user));
             if (data.completedLessons && data.completedLessons.length > 0) {
               setCompletedLessons(prev => {
                 const merged = Array.from(new Set([...prev, ...data.completedLessons]));
@@ -86,17 +96,25 @@ export default function App() {
     });
 
     // Award XP locally
-    if (user) {
-      setUser(prev => {
-        if (!prev) return prev;
-        const newXp = (prev.xp || 50) + 60;
-        return {
-          ...prev,
-          xp: newXp,
-          level: Math.floor(newXp / 150) + 1
-        };
-      });
-    }
+    setUser(prev => {
+      if (!prev) return prev;
+      const newXp = (prev.xp || 50) + 60;
+      const newLevel = Math.floor(newXp / 150) + 1;
+      const updatedBadges = [...(prev.badges || ['Sigma Rookie 🚀'])];
+      if (newXp >= 150 && !updatedBadges.includes('CSS Alchemist 🎨')) updatedBadges.push('CSS Alchemist 🎨');
+      if (newXp >= 300 && !updatedBadges.includes('JS Sorcerer ⚡')) updatedBadges.push('JS Sorcerer ⚡');
+      if (newXp >= 500 && !updatedBadges.includes('Sigma Fullstack God 👑')) updatedBadges.push('Sigma Fullstack God 👑');
+      const updated = {
+        ...prev,
+        xp: newXp,
+        level: newLevel,
+        badges: updatedBadges
+      };
+      try {
+        localStorage.setItem('sigma_current_user', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
 
     // 2. Sync to backend if online and user logged in
     const token = localStorage.getItem('sigma_token');
@@ -111,7 +129,10 @@ export default function App() {
       })
         .then(res => res.ok ? res.json() : null)
         .then(data => {
-          if (data && data.user) setUser(data.user);
+          if (data && data.user) {
+            setUser(data.user);
+            localStorage.setItem('sigma_current_user', JSON.stringify(data.user));
+          }
         })
         .catch(() => {});
     }
@@ -119,6 +140,7 @@ export default function App() {
 
   const handleLogout = () => {
     localStorage.removeItem('sigma_token');
+    localStorage.removeItem('sigma_current_user');
     setUser(null);
     setActiveTab('roadmap');
   };
