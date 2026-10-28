@@ -84,3 +84,4 @@ function createPng(width, height, filename, text) {
 const pubDir = path.join(process.cwd(), 'client', 'public');
 createPng(540, 960, path.join(pubDir, 'screenshot-mobile.png'), 'Sigma Dev Mobile Preview');
 createPng(1280, 720, path.join(pubDir, 'screenshot-desktop.png'), 'Sigma Dev Desktop Preview');
+
