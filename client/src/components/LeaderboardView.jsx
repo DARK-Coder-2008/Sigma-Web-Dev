@@ -292,3 +292,4 @@ export default function LeaderboardView({ user, completedLessons, language, onAw
     </div>
   );
 }
+

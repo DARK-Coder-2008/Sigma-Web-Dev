@@ -1,15 +1,18 @@
 // Sigma Web Dev Offline Service Worker
-const CACHE_NAME = 'sigma-webdev-v1';
+const CACHE_NAME = 'sigma-webdev-v2';
 const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+  './',
+  './index.html',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png',
+  './icon.svg'
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+      return cache.addAll(ASSETS_TO_CACHE).catch((err) => console.log('SW cache partial fail:', err));
     })
   );
   self.skipWaiting();
@@ -27,12 +30,13 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Stale-while-revalidate for offline support
+  if (event.request.method !== 'GET') return;
+
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       const fetchPromise = fetch(event.request)
         .then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200 && event.request.method === 'GET') {
+          if (networkResponse && networkResponse.status === 200) {
             const responseToCache = networkResponse.clone();
             caches.open(CACHE_NAME).then((cache) => {
               cache.put(event.request, responseToCache);
@@ -41,12 +45,10 @@ self.addEventListener('fetch', (event) => {
           return networkResponse;
         })
         .catch(() => {
-          // If network fails and cachedResponse exists, return cached
-          return cachedResponse;
+          return cachedResponse || (event.request.mode === 'navigate' ? caches.match('./index.html') : null);
         });
 
       return cachedResponse || fetchPromise;
     })
   );
 });
-

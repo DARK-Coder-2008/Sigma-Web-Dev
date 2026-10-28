@@ -162,3 +162,4 @@ export const getLeaderboardData = () => {
     leaderboard: students
   };
 };
+
