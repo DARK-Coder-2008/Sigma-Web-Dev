@@ -110,9 +110,11 @@ export default function Navbar({
             onClick={() => handleNavClick('home')}
             className="flex items-center space-x-2.5 cursor-pointer select-none group shrink-0"
           >
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-blue-500 flex items-center justify-center font-black text-white text-base shadow-lg shadow-violet-500/30 group-hover:scale-105 transition-transform">
-              Σ
-            </div>
+            <img 
+              src="./logo.png" 
+              alt="Sigma Web Dev" 
+              className="w-8 h-8 rounded-xl object-contain shadow-lg shadow-violet-500/30 group-hover:scale-105 transition-transform shrink-0" 
+            />
             <div className="min-w-0">
               <div className="flex items-center space-x-1.5">
                 <h1 className="font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-purple-300 to-blue-400 text-sm sm:text-base leading-tight truncate">

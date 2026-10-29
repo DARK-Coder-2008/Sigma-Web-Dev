@@ -34,8 +34,12 @@ export default function DownloadApkModal({ isOpen, onClose, deferredPrompt, lang
 
         {/* Modal Header */}
         <div className="text-center mb-5">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-blue-500 mb-3 shadow-lg shadow-violet-500/30">
-            <Smartphone className="w-7 h-7 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-900/90 border border-violet-500/40 p-1.5 mb-3 shadow-xl shadow-violet-500/30">
+            <img 
+              src="./logo.png" 
+              alt="Sigma Web Dev App Icon" 
+              className="w-full h-full object-contain rounded-xl"
+            />
           </div>
           <h2 className="text-lg font-display font-black text-white">
             {language === 'hi' ? 'Android APK और मोबाइल ऐप' : language === 'hinglish' ? 'Android APK & Mobile App 📱' : 'Download Android App (APK)'}

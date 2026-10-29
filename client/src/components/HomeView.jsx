@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import { 
-  Play, 
-  BookOpen, 
-  Sparkles, 
-  Code2, 
-  Trophy, 
-  Flame, 
-  Zap, 
-  ArrowRight, 
-  Search, 
-  CheckCircle2, 
-  Layers, 
-  Terminal, 
-  FolderGit2, 
-  Check, 
-  Clock, 
+import {
+  Play,
+  BookOpen,
+  Sparkles,
+  Code2,
+  Trophy,
+  Flame,
+  Zap,
+  ArrowRight,
+  Search,
+  CheckCircle2,
+  Layers,
+  Terminal,
+  FolderGit2,
+  Check,
+  Clock,
   Award,
   ChevronRight
 } from 'lucide-react';
@@ -23,11 +23,11 @@ import { projectsLibrary } from '../data/projectsData';
 import { chaptersData } from '../data/chaptersData';
 import confetti from 'canvas-confetti';
 
-export default function HomeView({ 
-  user, 
-  completedLessons, 
-  onNavigate, 
-  onSelectCourse, 
+export default function HomeView({
+  user,
+  completedLessons,
+  onNavigate,
+  onSelectCourse,
   onOpenPlaygroundWithCode,
   language,
   onAwardXp
@@ -71,7 +71,7 @@ export default function HomeView({
   };
 
   // Filtered courses for search
-  const filteredCourses = coursesCatalog.filter(c => 
+  const filteredCourses = coursesCatalog.filter(c =>
     c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     c.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
     c.category.toLowerCase().includes(searchQuery.toLowerCase())
@@ -79,7 +79,7 @@ export default function HomeView({
 
   return (
     <div className="w-full pb-28 pt-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-10 text-left">
-      
+
       {/* 1. HERO SECTION */}
       <section className="relative overflow-hidden rounded-3xl p-6 sm:p-10 lg:p-14 bg-gradient-to-br from-[#11182A] via-[#0D1222] to-[#080B16] border border-violet-500/20 shadow-2xl">
         {/* Glow ambient circles */}
@@ -197,7 +197,7 @@ export default function HomeView({
         {/* Global Progress Bar */}
         <div className="mt-4 space-y-1">
           <div className="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
-            <div 
+            <div
               className="bg-gradient-to-r from-violet-600 via-purple-500 to-blue-500 h-2 rounded-full transition-all duration-700"
               style={{ width: `${progressPercent}%` }}
             />
@@ -256,11 +256,10 @@ export default function HomeView({
         </div>
 
         {dailyFeedback && (
-          <div className={`mt-3 p-3 rounded-xl text-xs font-mono border ${
-            dailyFeedback.correct 
-              ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300' 
+          <div className={`mt-3 p-3 rounded-xl text-xs font-mono border ${dailyFeedback.correct
+              ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300'
               : 'bg-red-950/60 border-red-500/40 text-red-300'
-          }`}>
+            }`}>
             {dailyFeedback.text}
           </div>
         )}
@@ -376,11 +375,10 @@ export default function HomeView({
             >
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
-                    project.tier === 'Beginner' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' :
-                    project.tier === 'Intermediate' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' :
-                    'bg-purple-500/10 text-purple-400 border border-purple-500/30'
-                  }`}>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${project.tier === 'Beginner' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' :
+                      project.tier === 'Intermediate' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' :
+                        'bg-purple-500/10 text-purple-400 border border-purple-500/30'
+                    }`}>
                     {project.tier}
                   </span>
                   <span className="text-[11px] font-mono text-slate-400">{project.difficulty}</span>
@@ -449,9 +447,11 @@ export default function HomeView({
       {/* 7. FOOTER */}
       <footer className="pt-8 border-t border-slate-800/80 text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="flex items-center space-x-2">
-          <div className="w-5 h-5 rounded bg-violet-600 flex items-center justify-center text-white font-bold text-xs">
-            Σ
-          </div>
+          <img
+            src="./logo.png"
+            alt="Sigma Web Dev"
+            className="w-5 h-5 rounded object-contain shrink-0 shadow-sm shadow-violet-500/20"
+          />
           <span className="font-bold text-slate-400">SIGMA WEB DEV • DARK CODER</span>
         </div>
         <p className="font-mono text-[11px]">

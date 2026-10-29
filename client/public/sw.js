@@ -1,14 +1,12 @@
 // Sigma Web Dev - PWABuilder Certified Service Worker
-const CACHE_NAME = 'sigma-dev-cache-v3';
+const CACHE_NAME = 'sigma-dev-cache-v4';
 const OFFLINE_URL = './index.html';
 
 const PRECACHE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './icon-192.png',
-  './icon-512.png',
-  './icon.svg'
+  './logo.png'
 ];
 
 self.addEventListener('install', (event) => {
