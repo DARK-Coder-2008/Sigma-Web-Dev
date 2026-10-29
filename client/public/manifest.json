@@ -21,7 +21,36 @@
     "developer tools",
     "productivity"
   ],
+  "iarc_rating_id": "e58c174a-81d2-4ba1-b4f0-45929b9f7a77",
   "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://dark-coder-2008.github.io/Sigma-Web-Dev/manifest.json"
+    }
+  ],
+  "scope_extensions": [
+    {
+      "origin": "https://dark-coder-2008.github.io"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "./",
+      "name": "Web Code Files",
+      "icons": [
+        {
+          "src": "./icon-192.png",
+          "sizes": "192x192"
+        }
+      ],
+      "accept": {
+        "text/html": [".html", ".htm"],
+        "text/css": [".css"],
+        "text/javascript": [".js", ".mjs"]
+      }
+    }
+  ],
   "icons": [
     {
       "src": "./icon-192.png",
