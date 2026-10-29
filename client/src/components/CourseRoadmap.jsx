@@ -13,7 +13,11 @@ import {
   Flame,
   Layers,
   FileCode,
-  Smartphone
+  Smartphone,
+  ExternalLink,
+  Target,
+  ShieldCheck,
+  Lightbulb
 } from 'lucide-react';
 import { translations } from '../i18n/translations';
 import { chaptersData, categoriesList } from '../data/chaptersData';
@@ -25,7 +29,7 @@ export default function CourseRoadmap({
   onOpenPlaygroundWithCode,
   onOpenApkModal
 }) {
-  const t = translations[language];
+  const t = translations[language] || translations.hinglish;
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeChapterId, setActiveChapterId] = useState('sigma_001');
@@ -40,8 +44,8 @@ export default function CourseRoadmap({
       if (!q) return matchesCat;
       const matchesSearch = 
         String(ch.number).includes(q) ||
-        ch.title.en.toLowerCase().includes(q) ||
-        ch.topic.toLowerCase().includes(q) ||
+        (ch.title.en && ch.title.en.toLowerCase().includes(q)) ||
+        (ch.topic && ch.topic.toLowerCase().includes(q)) ||
         (ch.title.hi && ch.title.hi.toLowerCase().includes(q)) ||
         (ch.title.hinglish && ch.title.hinglish.toLowerCase().includes(q));
       return matchesCat && matchesSearch;
@@ -84,8 +88,8 @@ export default function CourseRoadmap({
   };
 
   return (
-    <div className="pb-24 pt-3 px-4 max-w-md mx-auto space-y-4">
-      {/* Hero Banner with Offline & APK Badge */}
+    <div className="pb-24 pt-3 px-4 max-w-md mx-auto space-y-4 text-left">
+      {/* Hero Banner with Enriched MDN, W3Schools & freeCodeCamp badges */}
       <div className="relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br from-purple-900/40 via-indigo-900/30 to-slate-900 border border-purple-500/20 shadow-xl">
         <div className="flex justify-between items-start">
           <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold">
@@ -105,18 +109,24 @@ export default function CourseRoadmap({
 
         <h2 className="text-lg font-display font-black text-white mt-2 leading-tight">
           {language === 'hi' 
-            ? 'सिग्मा वेब डेवलपमेंट: पूरे 139 अध्याय' 
+            ? 'सिग्मा वेब डेवलपमेंट: 139 संपूर्ण अध्याय' 
             : language === 'hinglish' 
             ? 'Sigma Web Dev: 139 Complete Chapters 🔥' 
             : 'Sigma Web Dev: All 139 Chapters'}
         </h2>
-        <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-          {language === 'hi' 
-            ? 'वीडियो समरी, थ्योरी नोट्स, कोड स्निपेट्स और क्विज़ के साथ संपूर्ण पाठ्यक्रम।' 
-            : language === 'hinglish' 
-            ? 'Zero fluff, pure theory summaries, code blueprints aur quizzes for all 139 tutorials!' 
-            : 'Comprehensive theory summaries, syntax blueprints & quizzes for all 139 tutorials.'}
-        </p>
+        
+        {/* Portal Source Badges */}
+        <div className="flex flex-wrap gap-1.5 mt-2">
+          <span className="text-[9px] bg-slate-950/80 border border-slate-700 text-cyan-300 font-mono px-2 py-0.5 rounded-md flex items-center space-x-1">
+            <span>📚 MDN Web Docs</span>
+          </span>
+          <span className="text-[9px] bg-slate-950/80 border border-slate-700 text-green-300 font-mono px-2 py-0.5 rounded-md flex items-center space-x-1">
+            <span>🌐 W3Schools</span>
+          </span>
+          <span className="text-[9px] bg-slate-950/80 border border-slate-700 text-yellow-300 font-mono px-2 py-0.5 rounded-md flex items-center space-x-1">
+            <span>🎯 freeCodeCamp</span>
+          </span>
+        </div>
 
         {/* Progress Bar */}
         <div className="mt-3 pt-2.5 border-t border-slate-800">
@@ -166,9 +176,9 @@ export default function CourseRoadmap({
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder={
             language === 'hi' 
-              ? 'अध्याय संख्या या टॉपिक खोजें (उदा. 1, flexbox, dom, mongodb)...' 
+              ? 'अध्याय संख्या या टॉपिक खोजें (उदा. 1, flexbox, dom, react)...' 
               : language === 'hinglish' 
-              ? 'Search chapter # ya topic (eg. 1, flexbox, dom, react)...' 
+              ? 'Search chapter # ya topic (eg. 1, flexbox, dom, mongodb)...' 
               : 'Search chapter # or topic (e.g. flexbox, promises, react)...'
           }
           className="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-9 pr-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 shadow-inner"
@@ -186,7 +196,7 @@ export default function CourseRoadmap({
       {/* Chapters Count Badge */}
       <div className="flex justify-between items-center text-xs text-slate-400 px-1 font-mono">
         <span>Showing {filteredChapters.length} Chapters</span>
-        <span className="text-[11px] text-cyan-400">Tap to read theory & code</span>
+        <span className="text-[11px] text-cyan-400">MDN + W3Schools + FCC</span>
       </div>
 
       {/* Chapters List */}
@@ -239,31 +249,66 @@ export default function CourseRoadmap({
                 </div>
               </div>
 
-              {/* Chapter Expanded Details: Theory & Summary */}
+              {/* Chapter Expanded Details */}
               {isExpanded && (
                 <div className="px-4 pb-4 pt-1 border-t border-slate-800/80 space-y-4 animate-in fade-in duration-200">
-                  {/* Theory & Summary Box */}
-                  <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 text-xs text-slate-300 leading-relaxed whitespace-pre-line font-sans">
-                    <div className="flex items-center space-x-1.5 text-purple-400 font-bold mb-2">
-                      <BookOpen className="w-4 h-4" />
+                  
+                  {/* 1. W3Schools Style Easy Concept Box */}
+                  <div className="p-3.5 rounded-xl bg-slate-950/80 border border-emerald-500/20 text-xs text-slate-300 leading-relaxed whitespace-pre-line font-sans">
+                    <div className="flex items-center space-x-1.5 text-emerald-400 font-bold mb-1.5">
+                      <Lightbulb className="w-4 h-4 text-emerald-400" />
                       <span>
                         {language === 'hi' 
-                          ? 'थ्योरी और मुख्य सिद्धांत (Theory Summary)' 
+                          ? 'सरल सिद्धांत और उदाहरण (W3Schools Style)' 
                           : language === 'hinglish' 
-                          ? 'Video Theory & Key Concept Summary 💡' 
-                          : 'Comprehensive Theory Summary'}
+                          ? 'Easy Concept & Real Analogy 💡 (W3Schools Style)' 
+                          : 'Simple Concept & Analogy (W3Schools Style)'}
                       </span>
                     </div>
-                    {chapter.theory[language] || chapter.theory.hinglish || chapter.theory.en}
+                    {chapter.w3Concept ? (chapter.w3Concept[language] || chapter.w3Concept.hinglish || chapter.w3Concept.en) : (chapter.theory ? (chapter.theory[language] || chapter.theory.hinglish || chapter.theory.en) : chapter.topic)}
                   </div>
 
-                  {/* Code Blueprint & Playground Runner */}
+                  {/* 2. MDN Deep Dive & Best Practices */}
+                  {chapter.mdnDeepDive && (
+                    <div className="p-3.5 rounded-xl bg-slate-950/80 border border-cyan-500/20 text-xs text-slate-300 leading-relaxed whitespace-pre-line font-sans">
+                      <div className="flex items-center space-x-1.5 text-cyan-400 font-bold mb-1.5">
+                        <ShieldCheck className="w-4 h-4 text-cyan-400" />
+                        <span>
+                          {language === 'hi' 
+                            ? 'MDN प्रो-टिप्स और मानक (Best Practices)' 
+                            : language === 'hinglish' 
+                            ? 'MDN Pro-Developer Best Practices 📚' 
+                            : 'MDN Web Docs Best Practices'}
+                        </span>
+                      </div>
+                      {chapter.mdnDeepDive[language] || chapter.mdnDeepDive.hinglish || chapter.mdnDeepDive.en}
+                    </div>
+                  )}
+
+                  {/* 3. freeCodeCamp Coding Challenge */}
+                  {chapter.fccExercise && (
+                    <div className="p-3 rounded-xl bg-slate-950/80 border border-yellow-500/20 text-xs text-slate-300 leading-relaxed whitespace-pre-line font-sans">
+                      <div className="flex items-center space-x-1.5 text-yellow-400 font-bold mb-1.5">
+                        <Target className="w-4 h-4 text-yellow-400" />
+                        <span>
+                          {language === 'hi' 
+                            ? 'freeCodeCamp कोडिंग टास्क' 
+                            : language === 'hinglish' 
+                            ? 'freeCodeCamp Hands-on Mission 🎯' 
+                            : 'freeCodeCamp Hands-on Challenge'}
+                        </span>
+                      </div>
+                      {chapter.fccExercise[language] || chapter.fccExercise.hinglish || chapter.fccExercise.en}
+                    </div>
+                  )}
+
+                  {/* 4. Code Blueprint & Live Playground Runner */}
                   {chapter.code && (
                     <div className="rounded-xl overflow-hidden bg-slate-950 border border-slate-800">
                       <div className="flex items-center justify-between px-3 py-1.5 bg-slate-900 border-b border-slate-800 text-[10px] text-slate-400 font-mono">
                         <span className="flex items-center space-x-1">
                           <FileCode className="w-3.5 h-3.5 text-purple-400" />
-                          <span>syntax_blueprint.{chapter.category === 'CSS' ? 'css' : chapter.category === 'JS' ? 'js' : 'html'}</span>
+                          <span>interactive_example.{chapter.category === 'CSS' ? 'css' : chapter.category === 'JS' ? 'js' : 'html'}</span>
                         </span>
                         <button
                           onClick={() => onOpenPlaygroundWithCode(chapter.code)}
@@ -273,13 +318,13 @@ export default function CourseRoadmap({
                           <span>Run in Code Lab 🚀</span>
                         </button>
                       </div>
-                      <pre className="p-3 text-[11px] font-mono text-cyan-200 overflow-x-auto max-h-40 leading-relaxed">
+                      <pre className="p-3 text-[11px] font-mono text-cyan-200 overflow-x-auto max-h-48 leading-relaxed">
                         <code>{chapter.code}</code>
                       </pre>
                     </div>
                   )}
 
-                  {/* Quick Concept Quiz */}
+                  {/* 5. Quick Concept Quiz */}
                   {chapter.quiz && (
                     <div className="p-3 rounded-xl bg-slate-950/70 border border-indigo-500/20 space-y-2">
                       <div className="flex items-center space-x-1.5 text-xs font-bold text-indigo-400">
@@ -328,7 +373,28 @@ export default function CourseRoadmap({
                     </div>
                   )}
 
-                  {/* Mark As Completed Button */}
+                  {/* 6. External Official Documentation Badges */}
+                  <div className="pt-1 flex flex-wrap items-center justify-between gap-2 text-[10px] text-slate-400 border-t border-slate-850">
+                    <span className="font-mono text-slate-500">Official Standards:</span>
+                    <div className="flex items-center space-x-2">
+                      <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development" target="_blank" rel="noreferrer" className="text-cyan-400 hover:underline flex items-center space-x-0.5">
+                        <span>MDN</span>
+                        <ExternalLink className="w-2.5 h-2.5" />
+                      </a>
+                      <span>•</span>
+                      <a href="https://www.w3schools.com/" target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline flex items-center space-x-0.5">
+                        <span>W3Schools</span>
+                        <ExternalLink className="w-2.5 h-2.5" />
+                      </a>
+                      <span>•</span>
+                      <a href="https://www.freecodecamp.org/" target="_blank" rel="noreferrer" className="text-yellow-400 hover:underline flex items-center space-x-0.5">
+                        <span>freeCodeCamp</span>
+                        <ExternalLink className="w-2.5 h-2.5" />
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* 7. Mark As Completed Button */}
                   <div className="pt-1">
                     <button
                       disabled={isCompleted}
