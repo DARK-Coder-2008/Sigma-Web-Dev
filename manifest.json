@@ -1,0 +1,114 @@
+{
+  "id": "sigma-web-dev-course-app",
+  "name": "Sigma Web Dev - Learn Web Development",
+  "short_name": "SigmaDev",
+  "description": "Full-Stack Web Development Course with 139 Chapters, Theory Summaries, Code Lab & AI Chatbot",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "portrait-primary",
+  "background_color": "#090d16",
+  "theme_color": "#a855f7",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": [
+    "education",
+    "developer tools",
+    "productivity"
+  ],
+  "iarc_rating_id": "e58c174a-81d2-4ba1-b4f0-45929b9f7a77",
+  "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://dark-coder-2008.github.io/Sigma-Web-Dev/manifest.json"
+    }
+  ],
+  "scope_extensions": [
+    {
+      "origin": "https://dark-coder-2008.github.io"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "./",
+      "name": "Web Code Files",
+      "icons": [
+        {
+          "src": "./logo.png",
+          "sizes": "192x192"
+        }
+      ],
+      "accept": {
+        "text/html": [".html", ".htm"],
+        "text/css": [".css"],
+        "text/javascript": [".js", ".mjs"]
+      }
+    }
+  ],
+  "icons": [
+    {
+      "src": "./logo.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "./logo.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./screenshot-mobile.png",
+      "type": "image/png",
+      "sizes": "540x960",
+      "form_factor": "narrow",
+      "label": "Sigma Web Dev Mobile View"
+    },
+    {
+      "src": "./screenshot-desktop.png",
+      "type": "image/png",
+      "sizes": "1280x720",
+      "form_factor": "wide",
+      "label": "Sigma Web Dev Desktop View"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "139 Chapters Roadmap",
+      "short_name": "Roadmap",
+      "description": "Browse all 139 course modules",
+      "url": "./",
+      "icons": [{ "src": "./logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Code Lab",
+      "short_name": "Playground",
+      "description": "Run live HTML, CSS & JavaScript",
+      "url": "./",
+      "icons": [{ "src": "./logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "SigmaBot AI",
+      "short_name": "AI Tutor",
+      "description": "Ask coding questions in Hinglish",
+      "url": "./",
+      "icons": [{ "src": "./logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Community Leaderboard",
+      "short_name": "Ranks",
+      "description": "Check student rankings and stats",
+      "url": "./",
+      "icons": [{ "src": "./logo.png", "sizes": "192x192" }]
+    }
+  ]
+}
