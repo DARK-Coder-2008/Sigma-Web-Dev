@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "vite build && powershell -Command \"New-Item -ItemType File -Path dist/.nojekyll -Force; cd dist; git init; git checkout -B gh-pages; git add .; git -c user.name='Dark Coder' -c user.email='omprakashn682@gmail.com' commit -m 'deploy: update'; git remote add origin https://github.com/DARK-Coder-2008/Sigma-Web-Dev.git; git push origin gh-pages --force; cd ..; Remove-Item -Recurse -Force dist/.git\""
   },
   "dependencies": {
     "canvas-confetti": "^1.9.3",
