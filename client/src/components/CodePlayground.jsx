@@ -17,6 +17,7 @@ import {
   AlertCircle 
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { debouncedSaveProfile } from '../services/firestoreService';
 
 const STARTER_TEMPLATES = {
   default: {
@@ -250,7 +251,7 @@ function update() {
   }
 };
 
-export default function CodePlayground({ initialCode, language }) {
+export default function CodePlayground({ initialCode, language, user }) {
   const [activeEditorTab, setActiveEditorTab] = useState('html'); // 'html' | 'css' | 'js' | 'raw'
   const [htmlCode, setHtmlCode] = useState(STARTER_TEMPLATES.default.html);
   const [cssCode, setCssCode] = useState(STARTER_TEMPLATES.default.css);
@@ -273,6 +274,13 @@ export default function CodePlayground({ initialCode, language }) {
       setSavedProjects(saved);
     } catch {}
   }, []);
+
+  // Sync projects from authenticated cloud user if available
+  useEffect(() => {
+    if (user?.savedProjects && Array.isArray(user.savedProjects) && user.savedProjects.length > 0) {
+      setSavedProjects(user.savedProjects);
+    }
+  }, [user?.savedProjects]);
 
   // Handle passed initialCode (e.g. from chapter or project)
   useEffect(() => {
@@ -377,6 +385,9 @@ export default function CodePlayground({ initialCode, language }) {
     const updated = [newProj, ...savedProjects.slice(0, 19)];
     setSavedProjects(updated);
     localStorage.setItem('sigma_saved_projects', JSON.stringify(updated));
+    if (user?.uid) {
+      debouncedSaveProfile(user.uid, { savedProjects: updated });
+    }
     confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
   };
 
@@ -395,6 +406,9 @@ export default function CodePlayground({ initialCode, language }) {
     const updated = savedProjects.filter(p => p.id !== id);
     setSavedProjects(updated);
     localStorage.setItem('sigma_saved_projects', JSON.stringify(updated));
+    if (user?.uid) {
+      debouncedSaveProfile(user.uid, { savedProjects: updated });
+    }
   };
 
   const handleDownload = () => {

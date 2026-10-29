@@ -2,30 +2,178 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // User profile: Anyone can read public leaderboard info, but only user can write their own
+    // Helper function: Check if caller is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function: Check if caller is the owner of the document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Helper function: Check if caller is verified in the /admins registry
+    // Admins have read access to student diagnostic profiles for platform monitoring
+    function isAdmin() {
+      return isAuthenticated() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Explicit Schema Validator for Document Creation
+    // Enforces allowed fields, data types, and strictly prohibits privilege escalation.
+    function isValidUserCreate(userId) {
+      let data = request.resource.data;
+      let allowedKeys = [
+        'uid', 'displayName', 'email', 'photoURL', 'role', 
+        'xp', 'level', 'streak', 'badges', 
+        'completedChapters', 'bookmarkedChapters', 'savedProjects', 
+        'createdAt', 'updatedAt'
+      ];
+      
+      return data.keys().hasOnly(allowedKeys)
+        && data.uid == userId
+        && (!('role' in data) || data.role == 'student')
+        && !('isAdminVerified' in data)
+        && (data.xp is number && data.xp >= 0)
+        && (data.level is number && data.level >= 1)
+        && (data.streak is number && data.streak >= 0)
+        && (data.completedChapters is list)
+        && (data.bookmarkedChapters is list)
+        && (data.savedProjects is list)
+        && (data.badges is list);
+    }
+
+    // Explicit Schema Validator for Document Updates
+    // Ensures existing UIDs and creation timestamps are immutable,
+    // and strictly prohibits modification of role or admin status by clients.
+    function isValidUserUpdate(userId) {
+      let data = request.resource.data;
+      let allowedKeys = [
+        'uid', 'displayName', 'email', 'photoURL', 'role', 
+        'xp', 'level', 'streak', 'badges', 
+        'completedChapters', 'bookmarkedChapters', 'savedProjects', 
+        'createdAt', 'updatedAt'
+      ];
+      let affected = data.diff(resource.data).affectedKeys();
+
+      return data.keys().hasOnly(allowedKeys)
+        && data.uid == resource.data.uid
+        && !affected.hasAny(['role', 'isAdminVerified', 'uid', 'createdAt'])
+        && (!('role' in data) || data.role == 'student')
+        && !('isAdminVerified' in data)
+        && (!('xp' in data) || (data.xp is number && data.xp >= resource.data.xp))
+        && (!('level' in data) || (data.level is number && data.level >= 1))
+        && (!('completedChapters' in data) || data.completedChapters is list)
+        && (!('bookmarkedChapters' in data) || data.bookmarkedChapters is list)
+        && (!('savedProjects' in data) || data.savedProjects is list)
+        && (!('badges' in data) || data.badges is list);
+    }
+
+    // Explicit Schema Validator for Leaderboard Creation
+    function isValidLeaderboardCreate(userId) {
+      let data = request.resource.data;
+      let allowedKeys = [
+        'uid', 'displayName', 'photoURL', 'xp', 'level', 
+        'streak', 'badgesCount', 'completedCount', 'updatedAt'
+      ];
+      return data.keys().hasOnly(allowedKeys)
+        && data.uid == userId
+        && (data.xp is number && data.xp >= 0)
+        && (data.level is number && data.level >= 1)
+        && (data.completedCount is number && data.completedCount >= 0)
+        && (!('streak' in data) || (data.streak is number && data.streak >= 0))
+        && (!('badgesCount' in data) || (data.badgesCount is number && data.badgesCount >= 0));
+    }
+
+    // Explicit Schema Validator for Leaderboard Updates (Enforces immutable UID)
+    function isValidLeaderboardUpdate(userId) {
+      let data = request.resource.data;
+      let allowedKeys = [
+        'uid', 'displayName', 'photoURL', 'xp', 'level', 
+        'streak', 'badgesCount', 'completedCount', 'updatedAt'
+      ];
+      let affected = data.diff(resource.data).affectedKeys();
+      
+      return data.keys().hasOnly(allowedKeys)
+        && data.uid == resource.data.uid
+        && !affected.hasAny(['uid'])
+        && (data.xp is number && data.xp >= resource.data.xp)
+        && (data.level is number && data.level >= 1)
+        && (data.completedCount is number && data.completedCount >= 0)
+        && (!('streak' in data) || (data.streak is number && data.streak >= 0))
+        && (!('badgesCount' in data) || (data.badgesCount is number && data.badgesCount >= 0));
+    }
+
+    // 1. Student Profiles & Learning Progress:
+    // Strictly private: A student can only read and write their own record.
+    // Admins have read-only access for curriculum and platform diagnostics.
+    // Client-side administrative write access to student documents is strictly denied.
     match /users/{userId} {
-      allow read: if true;
-      allow create: if request.auth != null && request.auth.uid == userId;
-      allow update: if request.auth != null && request.auth.uid == userId;
-      allow delete: if false; // Disallow accidental user deletion
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) && isValidUserCreate(userId);
+      allow update: if isOwner(userId) && isValidUserUpdate(userId);
+      allow delete: if false;
     }
     
-    // User lesson progress: strictly isolated to the user
+    // 2. Admins Registry:
+    // Clients can NEVER create or modify admin documents.
+    // Admin records must be created manually in Firebase Console or via trusted Firebase Admin SDK.
+    match /admins/{adminId} {
+      allow read: if isAuthenticated() && request.auth.uid == adminId;
+      allow write: if false;
+    }
+
+    // 3. User Progress Subcollections:
+    // Completed lessons: Immutable after creation. Can only be created and read by the owner.
+    match /users/{userId}/completed_lessons/{lessonId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId)
+                    && request.resource.data.keys().hasOnly(['lessonId', 'completedAt', 'quizScore'])
+                    && (!('lessonId' in request.resource.data) || request.resource.data.lessonId == lessonId);
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // Saved projects: Managed by the owner with full CRUD rights.
+    match /users/{userId}/saved_projects/{projectId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId)
+                    && request.resource.data.keys().hasOnly(['id', 'name', 'html', 'css', 'js', 'savedAt'])
+                    && (!('id' in request.resource.data) || request.resource.data.id == projectId);
+      allow update: if isOwner(userId)
+                    && request.resource.data.keys().hasOnly(['id', 'name', 'html', 'css', 'js', 'savedAt'])
+                    && (!('id' in request.resource.data) || request.resource.data.id == resource.data.id);
+      allow delete: if isOwner(userId);
+    }
+    
+    // 4. Legacy progress collections (preserved for backward compatibility):
+    // IDOR Protected: User cannot reassign another user's document to their own UID.
     match /user_progress/{progressId} {
-      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
-      allow write: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated()
+                    && resource.data.userId == request.auth.uid
+                    && request.resource.data.userId == request.auth.uid;
+      allow delete: if false;
     }
     
-    // Quiz submissions: logged-in users can record scores
+    // 5. Quiz Submissions:
+    // Immutable submission records.
     match /quiz_attempts/{attemptId} {
-      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
-      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if false;
+      allow delete: if false;
     }
     
-    // Public Leaderboard: read-only for public, updated by server/authenticated users
+    // 6. Community Leaderboard:
+    // Read allowed for authenticated students.
+    // Client-side deletion is explicitly denied.
+    // Identity UID is immutable on update.
     match /leaderboard/{userId} {
-      allow read: if true;
-      allow write: if request.auth != null && request.auth.uid == userId;
+      allow read: if isAuthenticated();
+      allow create: if isOwner(userId) && isValidLeaderboardCreate(userId);
+      allow update: if isOwner(userId) && isValidLeaderboardUpdate(userId);
+      allow delete: if false;
     }
   }
 }

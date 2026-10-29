@@ -1,10 +1,10 @@
 import React from 'react';
-import { X, Smartphone, Download, CheckCircle2, ShieldCheck, WifiOff, Sparkles, ExternalLink, Package } from 'lucide-react';
+import { X, Smartphone, Download, CheckCircle2, ShieldCheck, WifiOff, Sparkles, ExternalLink, Package, Clock, AlertCircle } from 'lucide-react';
 
 export default function DownloadApkModal({ isOpen, onClose, deferredPrompt, language }) {
   if (!isOpen) return null;
 
-  const handleInstallApp = async () => {
+  const handleInstallPwa = async () => {
     if (deferredPrompt) {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
@@ -22,82 +22,93 @@ export default function DownloadApkModal({ isOpen, onClose, deferredPrompt, lang
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-      <div className="w-full max-w-sm glass-panel border border-cyan-500/30 rounded-2xl p-6 shadow-2xl relative glow-cyan animate-in fade-in zoom-in-95 duration-200 text-left max-h-[90vh] overflow-y-auto">
+      <div className="w-full max-w-sm glass-panel border border-violet-500/30 rounded-2xl p-6 shadow-2xl relative glow-purple animate-in fade-in zoom-in-95 duration-200 text-left max-h-[90vh] overflow-y-auto">
+        
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg bg-slate-800/60"
+          className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg bg-slate-800/60 transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Modal Header */}
         <div className="text-center mb-5">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-500 via-indigo-600 to-purple-600 mb-3 shadow-lg shadow-cyan-500/30">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-blue-500 mb-3 shadow-lg shadow-violet-500/30">
             <Smartphone className="w-7 h-7 text-white" />
           </div>
           <h2 className="text-lg font-display font-black text-white">
-            {language === 'hi' ? 'Android APK / ऐप लॉन्च करें' : language === 'hinglish' ? 'Android APK & App Launcher 📱' : 'Download Android App (APK)'}
+            {language === 'hi' ? 'Android APK और मोबाइल ऐप' : language === 'hinglish' ? 'Android APK & Mobile App 📱' : 'Download Android App (APK)'}
           </h2>
-          <p className="text-xs text-slate-400 mt-1">
-            {language === 'hinglish' ? '100% Free me apne phone me install karein' : 'Install free as native Android App'}
+          <p className="text-xs text-slate-400 mt-1 font-mono">
+            DARK CODER • SIGMA WEB DEV
           </p>
         </div>
 
-        {/* Features Pill */}
-        <div className="space-y-2 mb-4">
-          <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center space-x-2.5 text-xs text-slate-200">
-            <WifiOff className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+        {/* Pipeline Status Notice */}
+        <div className="mb-4 p-3 rounded-xl bg-violet-950/40 border border-violet-500/30 space-y-1">
+          <div className="flex items-center space-x-1.5 text-violet-300 font-bold text-xs">
+            <Clock className="w-3.5 h-3.5 text-violet-400" />
+            <span>Standalone .APK Build: In Pipeline</span>
+          </div>
+          <p className="text-[11px] text-slate-400 leading-relaxed font-sans">
+            Direct WebAPK phone install is ready now! Standalone release APK is currently in build stage.
+          </p>
+        </div>
+
+        {/* Feature Pills */}
+        <div className="space-y-1.5 mb-4">
+          <div className="p-2 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center space-x-2 text-xs text-slate-300">
+            <WifiOff className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
             <span>100% Offline Mode (All 139 Chapters)</span>
           </div>
-          <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center space-x-2.5 text-xs text-slate-200">
-            <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-            <span>Official WebAPK Native Integration</span>
-          </div>
-          <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center space-x-2.5 text-xs text-slate-200">
-            <Sparkles className="w-4 h-4 text-yellow-400 flex-shrink-0" />
-            <span>Zero Google Play Store Fees ($0 Free)</span>
+          <div className="p-2 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center space-x-2 text-xs text-slate-300">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <span>Zero Play Store Fees ($0 Free Install)</span>
           </div>
         </div>
 
-        {/* Option 1: Direct 1-Tap Phone Install */}
-        <div className="mb-3">
-          <p className="text-[11px] font-bold text-slate-300 mb-1.5 font-mono">Option 1: Direct Phone Install (WebAPK)</p>
+        {/* Method 1: Instant WebAPK Install (1-Tap to Phone Home Screen) */}
+        <div className="mb-3.5">
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-[11px] font-bold text-white font-mono">Method 1: Instant Phone Install</span>
+            <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.2 rounded border border-emerald-500/30">Recommended</span>
+          </div>
           <button
-            onClick={handleInstallApp}
-            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 via-indigo-600 to-purple-600 text-white font-bold text-xs flex items-center justify-center space-x-2 shadow-lg shadow-cyan-500/30 hover:opacity-95 active:scale-95 transition-all"
+            onClick={handleInstallPwa}
+            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white font-bold text-xs flex items-center justify-center space-x-2 shadow-lg shadow-violet-600/30 active:scale-95 transition-all"
           >
             <Download className="w-4 h-4" />
-            <span>{language === 'hinglish' ? 'Install to Phone App Drawer 📲' : 'Install Direct WebAPK'}</span>
+            <span>{language === 'hinglish' ? 'Install to Phone App Drawer 📲' : 'Install Instant WebAPK'}</span>
           </button>
         </div>
 
-        {/* Option 2: PWABuilder Standalone APK Download */}
+        {/* Method 2: PWABuilder Cloud APK Package */}
         <div className="mb-4">
-          <p className="text-[11px] font-bold text-slate-300 mb-1.5 font-mono">Option 2: Standalone .APK File (PWABuilder)</p>
+          <span className="text-[11px] font-bold text-slate-300 mb-1 block font-mono">Method 2: Standalone .APK Package</span>
           <a
             href={pwaBuilderUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-purple-500/40 text-purple-200 font-bold text-xs flex items-center justify-center space-x-2 transition-all shadow-md text-center"
+            className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-violet-500/40 text-violet-300 hover:text-white font-bold text-xs flex items-center justify-center space-x-2 transition-all shadow-md text-center"
           >
-            <Package className="w-4 h-4 text-purple-400" />
-            <span>Generate & Download .APK Package</span>
-            <ExternalLink className="w-3.5 h-3.5 ml-1 text-slate-400" />
+            <Package className="w-4 h-4 text-violet-400" />
+            <span>Generate .APK via PWABuilder</span>
+            <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
           </a>
         </div>
 
-        {/* Step-by-Step Manual Guide */}
-        <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-[11px] text-slate-400 space-y-1.5 leading-relaxed">
-          <strong className="text-cyan-400 block mb-1">
-            {language === 'hinglish' ? 'Phone me install karne ka aasan tareeqa:' : 'How to install on Android:'}
+        {/* Step-by-Step Chrome Guide */}
+        <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-[11px] text-slate-400 space-y-1 leading-relaxed">
+          <strong className="text-violet-400 block mb-0.5">
+            {language === 'hinglish' ? 'Chrome se 1-Click install karein:' : 'How to install on Android Chrome:'}
           </strong>
-          <p>1. Apne Android phone me Chrome browser kholein.</p>
-          <p>2. Link open karein: <strong>dark-coder-2008.github.io/Sigma-Web-Dev/</strong></p>
-          <p>3. Top-right me <strong>3 dots (⋮)</strong> dabayein.</p>
-          <p>4. <strong>"Install app"</strong> / <strong>"Add to Home screen"</strong> select karein.</p>
-          <p>5. Phone me <strong>SigmaDev</strong> app icon aa jayega aur full-screen chalega!</p>
+          <p>1. Open <strong>dark-coder-2008.github.io/Sigma-Web-Dev/</strong></p>
+          <p>2. Tap <strong>3 dots (⋮)</strong> in Chrome.</p>
+          <p>3. Tap <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong>.</p>
+          <p>4. <strong>SigmaDev</strong> will install directly into your phone drawer!</p>
         </div>
+
       </div>
     </div>
   );

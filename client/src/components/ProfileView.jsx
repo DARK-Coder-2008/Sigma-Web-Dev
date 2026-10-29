@@ -1,5 +1,5 @@
-import React from 'react';
-import { Award, Flame, Zap, CheckCircle2, LogOut, LogIn, Sparkles, BookOpen } from 'lucide-react';
+import React, { useState } from 'react';
+import { Award, Flame, Zap, CheckCircle2, LogOut, LogIn, Sparkles, BookOpen, Edit2, Check, X, ShieldCheck } from 'lucide-react';
 import { translations } from '../i18n/translations';
 
 export default function ProfileView({ 
@@ -7,9 +7,28 @@ export default function ProfileView({
   completedLessons, 
   onLogout, 
   onOpenAuth, 
+  onUpdateProfile,
   language 
 }) {
   const t = translations[language];
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [nameInput, setNameInput] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleStartEdit = () => {
+    setNameInput(user?.name || user?.displayName || '');
+    setIsEditingName(true);
+  };
+
+  const handleSaveName = async () => {
+    if (!nameInput.trim()) return;
+    setIsSaving(true);
+    if (onUpdateProfile) {
+      await onUpdateProfile({ displayName: nameInput.trim() });
+    }
+    setIsSaving(false);
+    setIsEditingName(false);
+  };
 
   if (!user) {
     return (
@@ -47,18 +66,59 @@ export default function ProfileView({
       <div className="p-5 rounded-2xl glass-panel border border-purple-500/30 relative overflow-hidden shadow-xl">
         <div className="flex items-center space-x-3.5">
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-purple-600 via-pink-500 to-cyan-400 flex items-center justify-center text-white text-xl font-black shadow-lg shadow-purple-500/30 border border-white/20">
-            {user.name.charAt(0).toUpperCase()}
+            {(user.name || user.email || 'D').charAt(0).toUpperCase()}
           </div>
-          <div>
-            <div className="flex items-center space-x-1.5">
-              <h2 className="text-base font-display font-black text-white leading-tight">
-                {user.name}
-              </h2>
-              <span className="text-[10px] bg-purple-500/20 border border-purple-500/30 text-purple-300 font-bold px-2 py-0.5 rounded-full">
-                Lvl {user.level}
-              </span>
-            </div>
-            <p className="text-xs text-slate-400 font-mono mt-0.5">{user.email}</p>
+          <div className="flex-1 min-w-0">
+            {isEditingName ? (
+              <div className="flex items-center space-x-1.5 py-0.5">
+                <input
+                  type="text"
+                  value={nameInput}
+                  onChange={(e) => setNameInput(e.target.value)}
+                  className="bg-slate-900 border border-violet-500 rounded-lg px-2 py-1 text-xs text-white font-bold w-full focus:outline-none"
+                  placeholder="Enter name..."
+                  autoFocus
+                />
+                <button
+                  onClick={handleSaveName}
+                  disabled={isSaving}
+                  className="p-1 rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-500/30"
+                  title="Save name"
+                >
+                  <Check className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={() => setIsEditingName(false)}
+                  className="p-1 rounded-md bg-slate-800 text-slate-400 hover:text-white"
+                  title="Cancel"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-1.5">
+                <h2 className="text-base font-display font-black text-white leading-tight truncate">
+                  {user.name || user.displayName || user.email?.split('@')[0] || 'Dark Coder'}
+                </h2>
+                <button
+                  onClick={handleStartEdit}
+                  className="p-1 text-slate-500 hover:text-violet-400 transition-colors"
+                  title="Edit display name"
+                >
+                  <Edit2 className="w-3 h-3" />
+                </button>
+                <span className="text-[10px] bg-purple-500/20 border border-purple-500/30 text-purple-300 font-bold px-2 py-0.5 rounded-full shrink-0">
+                  Lvl {user.level}
+                </span>
+                {user.isAdminVerified && (
+                  <span className="text-[9px] bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 font-bold px-1.5 py-0.5 rounded-md flex items-center space-x-0.5 shrink-0">
+                    <ShieldCheck className="w-2.5 h-2.5" />
+                    <span>Admin</span>
+                  </span>
+                )}
+              </div>
+            )}
+            <p className="text-xs text-slate-400 font-mono mt-0.5 truncate">{user.email}</p>
           </div>
         </div>
 

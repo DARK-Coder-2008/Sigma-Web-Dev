@@ -228,3 +228,4 @@ console.log('Portfolio initialized successfully with Dark Coder Theme.');`
     learningObjectives: ['Manage real-time message streams', 'Auto-scroll on incoming messages', 'Simulate typing indicators']
   }
 ];
+

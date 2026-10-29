@@ -45,6 +45,32 @@ export default function AdminPanel({ user, completedLessons, language }) {
     } catch {}
   }, []);
 
+  // Phase 6 Admin Security Guard:
+  // Admin access is NOT granted based on email address, localStorage, or unverified client role.
+  // Prevents unauthorized visitors or normal students from viewing management tools or student records.
+  const isAuthorizedAdmin = user && user.role === 'admin' && user.isAdminVerified === true;
+
+  if (!isAuthorizedAdmin) {
+    return (
+      <div className="w-full pb-28 pt-12 px-4 max-w-md mx-auto text-center space-y-4">
+        <div className="w-16 h-16 mx-auto rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400 shadow-lg shadow-red-500/10">
+          <Lock className="w-8 h-8" />
+        </div>
+        <h2 className="text-xl font-display font-black text-white">
+          Access Restricted
+        </h2>
+        <p className="text-xs text-slate-400 font-mono leading-relaxed">
+          The administrative console is strictly restricted to verified administrators. Student accounts cannot view platform management tools or database records.
+        </p>
+        <div className="pt-2">
+          <span className="px-3 py-1 rounded-lg bg-slate-900 border border-slate-800 text-[11px] font-mono text-slate-500">
+            Protected by Cloud Authorization Rules
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full pb-28 pt-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 text-left">
       
@@ -108,8 +134,8 @@ export default function AdminPanel({ user, completedLessons, language }) {
                 <span>Active Profile</span>
                 <Users className="w-4 h-4 text-violet-400" />
               </div>
-              <p className="text-xl font-bold text-white truncate">{user ? user.name : 'Om Prakash Nayak'}</p>
-              <p className="text-[11px] text-slate-500 font-mono">Level {user?.level || 4} • {user?.xp || 485} Total XP</p>
+              <p className="text-xl font-bold text-white truncate">{user?.displayName || user?.name || 'Verified Administrator'}</p>
+              <p className="text-[11px] text-slate-500 font-mono">Level {user?.level || 1} • {user?.xp || 0} Total XP</p>
             </div>
 
             <div className="bg-[#11182A] border border-slate-800 p-5 rounded-2xl space-y-1">
